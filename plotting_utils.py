@@ -3,10 +3,11 @@ from matplotlib import pyplot as plt
 
 def stacked_bar_chart(sr, normalise=True, ascending=True, index=None, ax=None):
     '''
-    The point of this function is to create a chart similar to a pie chart but linearly
-    This will create a stacked bar chart with values placed on top of eachother in ascending
-    or descending order, and annotate according to the sr.index value or the index value if 
-    passed.
+    The point of this function is to create a chart similar to a pie chart 
+    but linearly.
+    This will create a stacked bar chart with values placed on top of 
+    eachother in ascending or descending order, and annotate according to 
+    the sr.index value or the index value if passed.
     
         sr : input series
         normalise : whether to normalise the values of sr such that they add to 100
