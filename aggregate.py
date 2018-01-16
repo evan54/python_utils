@@ -32,5 +32,5 @@ def roll_multi(df, w, **kwargs):
     df_out = pd.DataFrame(roll_array,
                  index=pd.MultiIndex.from_product([df_t.index[w-1:], range(w)],
                                      names=[df_t.index.name, 'roll']),
-                 columns=df_t.columns).head(10)
+                 columns=df_t.columns)
     return df_out.groupby(level=0, **kwargs)
