@@ -7,20 +7,20 @@ def calc_cumsum_hist(arr):
 
 
 def pd_summary(df, kwargs):
-    return (df.groupby(lambda x: 0)
-            .agg({col: kwargs for col in df.columns})
-            .iloc[0].unstack().T)
+    grps = df.groupby(lambda x: 0)
+    agg = grps.agg({col: kwargs for col in df.columns})
+    return agg.iloc[0].unstack().T
 
 
 def roll_multi(df, w, **kwargs):
     """
     Groupby multiple columns to allow apply function to be applied with multiple
     columns as inputs.
-    
+
     Example:
-    
+
     calculate the average of the open and the close.
-    
+
         roll_multi(df, 2).apply(
             lambda x:
                 (x['close'] * x['volume']).sum()
