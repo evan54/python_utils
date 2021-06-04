@@ -70,7 +70,7 @@ def plot_dt(x, y, start_time, end_time, *args, plot_jump_loc=True, **kwargs):
     x_ = x - jump_counts * jump_timedelta
 
     day_jumps = x_.diff().fillna(0).dt.total_seconds() // (24*60*60)
-    x_ =  x_ - pd.Timedelta(days=1) * day_jumps.cumsum()
+    x_ = x_ - pd.Timedelta(days=1) * day_jumps.cumsum()
 
     xp = mdates.date2num(x_)
     fp = mdates.date2num(x)
