@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 import matplotlib.dates as mdates
@@ -68,6 +69,9 @@ def plot_dt(x, y, start_time, end_time, *args, plot_jump_loc=True, **kwargs):
     jump_counts = jump_locations.cumsum()
     x_ = x - jump_counts * jump_timedelta
 
+    day_jumps = x_.diff().fillna(0).dt.total_seconds() // (24*60*60)
+    x_ =  - pd.Timestamp(days=1) * day_jumps.cumsum()
+
     xp = mdates.date2num(x_)
     fp = mdates.date2num(x)
 
@@ -82,6 +86,11 @@ def plot_dt(x, y, start_time, end_time, *args, plot_jump_loc=True, **kwargs):
     plt.xticks(rotation=45)
     plt.plot(x_, y, *args, **kwargs)
     if plot_jump_loc:
+        x_day_jumps = x_[day_jumps.shift(-1)]
         ylim = plt.ylim()
         for t in x_[jump_locations.shift(-1).fillna(False)]:
-            plt.plot([t]*2, ylim, 'k--')
+            if t in x_day_jumps:
+                color = 'k'
+            else:
+                color = 'r'
+            plt.plot([t]*2, ylim, color + '--')
