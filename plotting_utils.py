@@ -1,5 +1,8 @@
 import pandas as pd
 from matplotlib import pyplot as plt
+import matplotlib.dates as mdates
+import matplotlib.ticker
+
 
 def stacked_bar_chart(sr, normalise=True, ascending=True, index=None, ax=None):
     '''
@@ -48,3 +51,37 @@ def stacked_bar_chart(sr, normalise=True, ascending=True, index=None, ax=None):
         yloc += value/2.
     plt.xlim(0., 1)
     return ax
+
+
+def plot_dt(x, y, start_time, end_time, *args, plot_jump_loc=True, **kwargs):
+    x = pd.to_datetime(pd.Series(x))
+    time = x - x.dt.normalize()
+    ind = (time >= start_time) & (time <= end_time)
+    x = x[ind]
+    y = y[ind]
+    time = time[ind]
+
+    epoch = pd.Timestamp('19700101')
+    jump_timedelta = start_time - end_time + pd.Timedelta(hours=24)
+
+    jump_locations = time.diff().dt.total_seconds() < 0
+    jump_counts = jump_locations.cumsum()
+    x_ = x - jump_counts * jump_timedelta
+
+    xp = mdates.date2num(x_)
+    fp = mdates.date2num(x)
+
+    def custom_date_format(val, pos):
+        f_val = np.interp(val, xp, fp)
+        d_val = mdates.num2date(f_val)
+        return d_val.strftime('%Y-%m-%d %H:%M')
+
+    formatter = matplotlib.ticker.FuncFormatter(custom_date_format)
+    ax = plt.gca()
+    ax.xaxis.set_major_formatter(formatter)
+    plt.xticks(rotation=45)
+    plt.plot(x_, y, *args, **kwargs)
+    if plot_jump_loc:
+        ylim = plt.ylim()
+        for t in x_[jump_locations.shift(-1).fillna(False)]:
+            plt.plot([t]*2, ylim, 'k--')
