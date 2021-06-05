@@ -83,7 +83,7 @@ def plot_dt(x, y, start_time, end_time, *args, plot_jump_loc=True, **kwargs):
     formatter = matplotlib.ticker.FuncFormatter(custom_date_format)
     ax = plt.gca()
     ax.xaxis.set_major_formatter(formatter)
-    plt.xticks(rotation=45)
+    plt.xticks(rotation=45, ha='right')
     plt.plot(x_, y, *args, **kwargs)
     if plot_jump_loc:
         x_day_jumps = x_[day_jumps.shift(-1) > 0]
